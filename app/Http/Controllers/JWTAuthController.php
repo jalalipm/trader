@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 //use Illuminate\Support\Facades\Auth;
+use App\Helpers\MessageHelper;
 use App\Http\Controllers\Controller;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use Validator;
 use Illuminate\Http\Request;
 use App\User;
@@ -13,7 +15,7 @@ class JWTAuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register', 'profile','logout','refresh']]);
     }
 
 
@@ -31,7 +33,7 @@ class JWTAuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return MessageHelper::instance()->sendError('Validation Error.',$validator->errors(),422);
         }
 
         $user = User::create(array_merge(
@@ -39,10 +41,7 @@ class JWTAuthController extends Controller
             ['password' => bcrypt($request->password)]
         ));
 
-        return response()->json([
-            'message' => 'Successfully registered',
-            'user' => $user
-        ], 201);
+        return MessageHelper::instance()->sendResponse('Successfully registered',$user,201);
     }
 
 
@@ -54,43 +53,49 @@ class JWTAuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return MessageHelper::instance()->sendError('Validation Error.',$validator->errors(),422);
         }
 
         if (! $token = auth()->attempt($validator->validated())) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return MessageHelper::instance()->sendError('Unauthorized',[],401);
         }
 
-        return $this->createNewToken($token);
+        return MessageHelper::instance()->sendResponse('Successfully logged in',$this->createNewToken($token)->original,200);
     }
 
 
     public function profile()
     {
-        return response()->json(auth()->user());
+        if(auth()->user()){
+        return MessageHelper::instance()->sendResponse('Successfully received',auth()->user(),200);
+        }
+        return MessageHelper::instance()->sendError('Unauthorized',[],401);
     }
 
 
     public function logout()
     {
         auth()->logout();
-
-        return response()->json(['message' => 'Successfully logged out']);
+        return MessageHelper::instance()->sendResponse('Successfully logged out',[],200);
     }
 
 
     public function refresh()
     {
-        return $this->createNewToken(auth()->refresh());
+        try {
+            $newToken= $this->createNewToken(auth()->refresh());
+            return MessageHelper::instance()->sendResponse('Successfully received',$newToken->original,200);
+        } catch (JWTException $e){
+            return MessageHelper::instance()->sendError('Unauthorized',$e->getMessage(),401);
+        }
     }
-
 
     protected function createNewToken($token)
     {
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => auth()->factory()->getTTL() * 3600
         ]);
     }
 }
