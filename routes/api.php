@@ -21,9 +21,7 @@ use Illuminate\Support\Facades\Route;
 Route::group([
     'middleware' => 'api',
     'prefix' => 'auth'
-
 ], function ($router) {
-
     Route::post('register', 'JWTAuthController@register');
     Route::post('login', 'JWTAuthController@login');
     Route::post('logout', 'JWTAuthController@logout');
@@ -31,3 +29,19 @@ Route::group([
     Route::get('profile', 'JWTAuthController@profile');
 
 });
+
+Route::Group(
+    ['prefix' => 'v1', 'namespace' => 'api\v1'],
+    function () {
+        // Without Authentication
+    });
+
+Route::Group(
+    ['prefix' => 'v1', 'namespace' => 'api\v1', 'middleware' => ['api']],
+    function () {
+        Route::get('PortfolioManagement', 'PortfolioManagementController@index');
+        Route::get('PortfolioManagement/{id}', 'PortfolioManagementController@show');
+        Route::post('PortfolioManagement', 'PortfolioManagementController@store');
+        Route::put('PortfolioManagement/{id}', 'PortfolioManagementController@update');
+        Route::delete('PortfolioManagement/{id}', 'PortfolioManagementController@destroy');
+    });
