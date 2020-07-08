@@ -20,10 +20,19 @@ class JWTAuthController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|between:2,100',
-            'email' => 'required|email|unique:users|max:50',
+            'name' => 'required|max:255',
+            'email' => 'email|unique:users|max:50',
             'password' => 'required|confirmed|string|min:6',
+            'national_code' => 'required|string|size:10',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'address' => 'string|max:500',
+            'cell_phone' => 'required|unique:users|string|size:11'
         ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
 
         $user = User::create(array_merge(
             $validator->validated(),
@@ -40,7 +49,7 @@ class JWTAuthController extends Controller
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
+            'cell_phone' => 'required|string|size:11',
             'password' => 'required|string|min:6',
         ]);
 
