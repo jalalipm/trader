@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // $this->call(UserSeeder::class);
-        $this->call(PortfolioManagement::class);
-        $this->call(StockData::class);
+        $this->call(PortfolioManagementSeeder::class);
+        $this->call(StockDataSeeder::class);
     }
 }
