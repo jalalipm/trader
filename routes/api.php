@@ -27,14 +27,15 @@ Route::group([
     Route::post('logout', 'JWTAuthController@logout');
     Route::post('refresh', 'JWTAuthController@refresh');
     Route::get('profile', 'JWTAuthController@profile');
-
 });
 
 Route::Group(
     ['prefix' => 'v1', 'namespace' => 'api\v1'],
     function () {
-        // Without Authentication
-    });
+        Route::get('PortfolioManagementInterest', 'PortfolioManagementController@interest');
+        Route::get('StockData', 'StockDataController@index');
+    }
+);
 
 Route::Group(
     ['prefix' => 'v1', 'namespace' => 'api\v1', 'middleware' => ['api']],
@@ -44,4 +45,18 @@ Route::Group(
         Route::post('PortfolioManagement', 'PortfolioManagementController@store');
         Route::put('PortfolioManagement/{id}', 'PortfolioManagementController@update');
         Route::delete('PortfolioManagement/{id}', 'PortfolioManagementController@destroy');
-    });
+
+        //StockData
+        Route::get('StockData/{id}', 'StockDataController@show');
+        Route::post('StockData', 'StockDataController@store');
+        Route::put('StockData/{id}', 'StockDataController@update');
+        Route::delete('StockData/{id}', 'StockDataController@destroy');
+
+        //Payment
+        Route::get('Payment', 'PaymentController@index');
+        Route::get('Payment/{id}', 'PaymentController@show');
+        Route::post('Payment', 'PaymentController@store');
+        Route::put('Payment/{id}', 'PaymentController@update');
+        Route::delete('Payment/{id}', 'PaymentController@destroy');
+    }
+);
