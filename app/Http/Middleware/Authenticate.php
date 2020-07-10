@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Helpers\MessageHelper;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 
 class Authenticate extends Middleware
@@ -14,8 +15,20 @@ class Authenticate extends Middleware
      */
     protected function redirectTo($request)
     {
-        if (! $request->expectsJson()) {
+
+//        if( $request->is('api/*')){
+//            return MessageHelper::instance()->sendError('Unauthorized',[],401);
+//        }else{
+//            return route('login');
+//        }
+
+        if ($request->wantsJson()) {
+            return MessageHelper::instance()->sendError('Unauthorized',[],401);
+        } else {
             return route('login');
         }
+//        if (! $request->expectsJson()) {
+//            return route('login');
+//        }
     }
 }

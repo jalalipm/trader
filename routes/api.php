@@ -38,7 +38,7 @@ Route::Group(
 );
 
 Route::Group(
-    ['prefix' => 'v1', 'namespace' => 'api\v1', 'middleware' => ['api']],
+    ['prefix' => 'v1', 'namespace' => 'api\v1', 'middleware' => ['auth:api']],
     function () {
         Route::get('PortfolioManagement', 'PortfolioManagementController@index');
         Route::get('PortfolioManagement/{id}', 'PortfolioManagementController@show');
