@@ -18,15 +18,14 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 
-Route::group([
-    'middleware' => 'api',
-    'prefix' => 'auth'
-], function ($router) {
-    Route::post('register', 'JWTAuthController@register');
-    Route::post('login', 'JWTAuthController@login');
-    Route::post('logout', 'JWTAuthController@logout');
-    Route::post('refresh', 'JWTAuthController@refresh');
-    Route::get('profile', 'JWTAuthController@profile');
+
+Route::post('register', 'RegisterController@register');
+Route::post('login', 'RegisterController@login');
+Route::post('logout', 'RegisterController@logout');
+Route::middleware('auth:api')->group( function () {
+    Route::post('logout', 'RegisterController@logout');
+    Route::get('profile', 'RegisterController@profile');
+    Route::post('refresh', 'RegisterController@refresh');
 });
 
 Route::Group(

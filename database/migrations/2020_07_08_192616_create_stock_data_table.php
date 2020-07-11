@@ -6,11 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateStockDataTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('stock_data', function (Blueprint $table) {
@@ -27,11 +22,6 @@ class CreateStockDataTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('stock_data');

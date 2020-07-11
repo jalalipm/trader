@@ -6,6 +6,7 @@ use App\Helpers\MessageHelper;
 use App\Http\Controllers\Controller;
 use App\Model\PortfolioManagement;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PortfolioManagementController extends Controller
 {
@@ -59,4 +60,5 @@ class PortfolioManagementController extends Controller
     {
         //
     }
+
 }
