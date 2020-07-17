@@ -14,9 +14,10 @@ class UserAccountController extends Controller
         //
     }
 
-    public function store(Request $request)
+    public function store($request)
     {
-        //
+        $result = UserAccount::insert($request);
+        return $result;
     }
 
     public function show(UserAccount $userAccount)

@@ -14,11 +14,11 @@ class StockDataController extends Controller
     public function index()
     {
         // if (auth()->user()) {
-        $list = StockData::get();
+        $list = StockData::first();
         $portfolio_list = PortfolioManagement::orderBy('interest_rate', 'Desc')->take(5)->get();
         $data = [
             'stock_data' => $list,
-            'interest_portfolios' => $portfolio_list
+            'portfolio_managements' => $portfolio_list
         ];
         return MessageHelper::instance()->sendResponse('Successfully received', $data, 200);
         // }

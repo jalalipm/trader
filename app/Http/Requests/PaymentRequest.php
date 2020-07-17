@@ -17,7 +17,7 @@ class PaymentRequest extends FormRequest
             'user_id'    => 'required',
             'transaction_date'    => 'required',
             'ref_id'    => 'required',
-            'price'    => 'required',
+            'amount'    => 'required',
             'payment_kind'    => 'required',
 
         ];

@@ -17,7 +17,8 @@ class PortfolioManagementController extends Controller
 
         // if (auth()->user()) {
         $list = PortfolioManagement::get();
-        return MessageHelper::instance()->sendResponse('Successfully received', $list, 200);
+        $data = ['portfolio_managements' => $list];
+        return MessageHelper::instance()->sendResponse('Successfully received', $data, 200);
         // }
         // return MessageHelper::instance()->sendError('Unauthorized', [], 401);
     }
@@ -28,7 +29,8 @@ class PortfolioManagementController extends Controller
 
         // if (auth()->user()) {
         $list = PortfolioManagement::orderBy('interest_rate', 'Desc')->take(5)->get();
-        return MessageHelper::instance()->sendResponse('Successfully received', $list, 200);
+        $data = ['portfolio_managements' => $list];
+        return MessageHelper::instance()->sendResponse('Successfully received', $data, 200);
         // }
         // return MessageHelper::instance()->sendError('Unauthorized', [], 401);
     }
@@ -44,7 +46,8 @@ class PortfolioManagementController extends Controller
     {
         // if (auth()->user()) {
         $item = PortfolioManagement::where('id', $id)->first();
-        return MessageHelper::instance()->sendResponse('Successfully received', $item, 200);
+        $data = ['portfolio_management' => $item];
+        return MessageHelper::instance()->sendResponse('Successfully received', $data, 200);
         // }
         // return MessageHelper::instance()->sendError('Unauthorized', [], 401);
     }
@@ -60,5 +63,4 @@ class PortfolioManagementController extends Controller
     {
         //
     }
-
 }

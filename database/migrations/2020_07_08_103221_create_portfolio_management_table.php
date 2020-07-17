@@ -13,7 +13,7 @@ class CreatePortfolioManagementTable extends Migration
             $table->id();
             $table->string('title', 200);
             $table->string('avatar', 200);
-            $table->text('describtion')->nullable();
+            $table->text('description')->nullable();
             $table->double('interest_rate', 4, 2)->default(0);
             $table->timestamps();
         });
