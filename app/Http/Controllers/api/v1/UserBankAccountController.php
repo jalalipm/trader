@@ -41,7 +41,7 @@ class UserBankAccountController extends Controller
         // dd(Auth::user());
         $item = UserBankAccount::where('user_id', Auth::user()->id)->get();
         $data = ['user_bank_accounts' => $item];
-        return MessageHelper::instance()->sendResponse('Successfully registered', $data, 200);
+        return MessageHelper::instance()->sendResponse('Successfully received', $data, 200);
     }
 
     public function update(Request $request)
@@ -63,6 +63,7 @@ class UserBankAccountController extends Controller
     {
         $dataList = UserBankAccount::find($id);
         $dataList->delete();
-        return MessageHelper::instance()->sendResponse('Successfully Deleted', [], 200);
+        // $data = ["user_bank_account" => null];
+        return MessageHelper::instance()->sendResponse('Successfully Deleted', null, 200);
     }
 }

@@ -6,12 +6,15 @@ use App\Helpers\MessageHelper;
 use App\Helpers\Sms\Smsir;
 use Illuminate\Http\Request;
 use App\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\Passport;
 use phpseclib\Crypt\Random;
 use Validator;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\URL;
+
 // use SmsIR_VerificationCode;
 
 class RegisterController extends Controller
@@ -87,6 +90,7 @@ class RegisterController extends Controller
         $input_email = $request->json()->get('email');
         $input_national_code = $request->json()->get('national_code');
         $input_address = $request->json()->get('address');
+        $input_postal_code = $request->json()->get('postal_code');
         // $input_cell_phone = $request->json()->get('cell_phone');
         if (!$request->json()->has('password')) {
             $dataList = [
@@ -96,7 +100,7 @@ class RegisterController extends Controller
                 'email' => $input_email,
                 'national_code' => $input_national_code,
                 'address' => $input_address,
-                // 'cell_phone' => $input_cell_phone
+                'postal_code' => $input_postal_code
             ];
         } else {
             $input_password = $request->json()->get('password');
@@ -106,6 +110,15 @@ class RegisterController extends Controller
         }
 
         try {
+            if (Request()->hasFile('avatar')) {
+                // $user = User::find($user_id);
+                $timestamp = Carbon::now(new \DateTimeZone('Asia/Tehran'))->timestamp;
+                $new_name = $input_first_name . ' ' . $input_last_name . $timestamp . '_' . request()->file('avatar')->getClientOriginalName();
+                $file_path = request()->file('avatar')->move(public_path('files/users'), $new_name);
+                if ($file_path instanceof \Symfony\Component\HttpFoundation\File\File) {
+                    $dataList['avatar'] = url("/files/users/{$new_name}");
+                }
+            }
             $UserUpdating = User::find(Auth::user()->id);
             $UserUpdating->update($dataList);
             // $UserUpdated = User::find($UserUpdating->id);
@@ -113,7 +126,29 @@ class RegisterController extends Controller
             return MessageHelper::instance()->sendResponse('your profile is updated', $data, 200);
         } catch (QueryException $ex) {
             $string = $ex->getMessage();
-            return MessageHelper::instance()->sendResponse('error while updating data', $string, 200);
+            return MessageHelper::instance()->sendError('error while updating data', $string, 400);
+        }
+    }
+
+    public function delete_profile_avatar(Request $request)
+    {
+
+        $input_user_id = $request->json()->get('user_id');
+        try {
+            $user = User::find($input_user_id);
+            $base_url = URL::to('/');
+            $file_name = public_path() . substr($user->avatar, strlen($base_url));
+            $user->update(['avatar' => null]);
+            if (file_exists($file_name))
+                unlink($file_name);
+            $List = User::find($input_user_id);
+            $data = ['user' => $user];
+            return MessageHelper::instance()->sendResponse('your profile is updated', $data, 200);
+            // return response()->json(['code' => '1002', 'message' => 'data was successfully deleted', 'user' => $List], 200, [], JSON_UNESCAPED_UNICODE);
+        } catch (QueryException $ex) {
+            $string = $ex->getMessage();
+            return MessageHelper::instance()->sendError('error while updating data', $string, 400);
+            // return response()->json(['code' => '1004', 'message' => 'error while deleting data', 'errors' => $string], 400);
         }
     }
 

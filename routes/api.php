@@ -34,6 +34,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('Profile', 'RegisterController@profile');
     Route::post('Refresh', 'RegisterController@refresh');
     Route::put('UpdateUserProfile', 'RegisterController@update');
+    Route::delete('DeleteProfileAvatar', 'RegisterController@delete_profile_avatar');
 });
 
 Route::Group(
@@ -44,6 +45,7 @@ Route::Group(
         Route::get('PortfolioManagement/{id}', 'PortfolioManagementController@show');
         Route::get('PortfolioManagementInterest', 'PortfolioManagementController@interest');
         Route::get('StockData', 'StockDataController@index');
+        Route::get('Faq', 'FaqController@index');
     }
 );
 
@@ -53,7 +55,7 @@ Route::Group(
         //User
 
         // Route::get('PortfolioManagement', 'PortfolioManagementController@index');
-        // Route::get('PortfolioManagement/{id}', 'PortfolioManagementController@show');
+        Route::get('PortfolioManagementByUser', 'PortfolioManagementController@get_by_user');
         Route::post('PortfolioManagement', 'PortfolioManagementController@store');
         Route::put('PortfolioManagement/{id}', 'PortfolioManagementController@update');
         Route::delete('PortfolioManagement/{id}', 'PortfolioManagementController@destroy');
@@ -65,7 +67,7 @@ Route::Group(
         Route::delete('StockData/{id}', 'StockDataController@destroy');
 
         //Payment
-        Route::get('Payment', 'PaymentController@index');
+        Route::get('PaymentByUser', 'PaymentController@get_by_user');
         Route::get('Payment/{id}', 'PaymentController@show');
         Route::get('PaymentDoPay', 'PaymentController@do_pay');
         Route::get('PaymentVerify', 'PaymentController@pay_verify');
@@ -102,5 +104,17 @@ Route::Group(
         Route::post('UserTicketResponse', 'UserTicketResponseController@store');
         Route::put('UserTicketResponse', 'UserTicketResponseController@update');
         Route::delete('UserTicketResponse', 'UserTicketResponseController@destroy');
+
+        //Dashboard
+        Route::get('GetDashboard', 'DashboardController@get_dashboard');
+
+        //Message
+        Route::get('Message/{id}', 'MessageController@show');
+        Route::get('MessageByUser', 'MessageController@get_by_user');
+
+        //Message
+        Route::get('UserDocumentByUser', 'UserDocumentController@get_by_user');
+        Route::post('UserDocument', 'UserDocumentController@store');
+        Route::delete('UserDocument', 'UserDocumentController@destroy');
     }
 );

@@ -1,7 +1,5 @@
 <?php
 
-use App\Model\PortfolioManagement;
-use App\Model\StockData;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -16,5 +14,7 @@ class DatabaseSeeder extends Seeder
         // $this->call(UserSeeder::class);
         $this->call(PortfolioManagementSeeder::class);
         $this->call(StockDataSeeder::class);
+        $this->call(PaymentSeeder::class);
+        $this->call(RefoundRequestSeeder::class);
     }
 }

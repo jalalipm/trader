@@ -19,7 +19,7 @@ class RefundRequestController extends Controller
     public function get_by_user()
     {
         // dd(Auth::user());
-        $list = RefundRequest::where('user_id', Auth::user()->id)->get();
+        $list = RefundRequest::GetByUser(Auth::user()->id)->get();
         $data = ['refund_requests' => $list];
         return MessageHelper::instance()->sendResponse('Successfully registered', $data, 200);
     }
@@ -40,17 +40,18 @@ class RefundRequestController extends Controller
             'portfolio_management_id' => $request->portfolio_management_id,
             'price' => $request->price,
             'status' => 1,
-            'transaction_date' => strval($Date), // $request->transaction_date,
-            // 'comment' => $request->comment
+            'transaction_date' => strval($Date),
+            'comment' => $request->comment
         ];
         $item = RefundRequest::create($data);
-        $data = ['refund_request' => $item];
+        $item_new = RefundRequest::RefundRequest()->find($item->id);
+        $data = ['refund_request' => $item_new];
         return MessageHelper::instance()->sendResponse('Successfully registered', $data, 201);
     }
 
     public function show($id)
     {
-        $item = RefundRequest::find($id);
+        $item = RefundRequest::RefundRequest()->find($id);
         $data = ['refund_request' => $item];
         return MessageHelper::instance()->sendResponse('Successfully registered', $data, 200);
     }
@@ -63,8 +64,10 @@ class RefundRequestController extends Controller
             $dataList = [
                 'portfolio_management_id' => $request->portfolio_management_id,
                 'price' => $request->price,
+                'comment' => $request->comment
             ];
             $item->update($dataList);
+            $item = RefundRequest::RefundRequest()->find($request->id);
             $data = ['refund_request' => $item];
             return MessageHelper::instance()->sendResponse('Successfully Updated', $data, 200);
         } else {
@@ -77,7 +80,7 @@ class RefundRequestController extends Controller
         $item = RefundRequest::find($id);
         if ($item->status != 1) {
             $item->delete();
-            return MessageHelper::instance()->sendResponse('Successfully Deleted', [], 200);
+            return MessageHelper::instance()->sendResponse('Successfully Deleted', null, 200);
         } else {
             return MessageHelper::instance()->sendResponse('Refund Status Not Valid', null, 400);
         }

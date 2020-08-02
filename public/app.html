@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <style>
+        @font-face {
+            font-family: 'IranSans';
+            src: url('./css/fonts/iransans/IRANSansWeb_Bold.ttf') format('truetype');
+            font-weight: bold;
+        }
+        
+        .font {
+            font-family: "IranSans";
+            font-size: 12px;
+        }
+        
+        .btn {
+            font-family: "IranSans";
+            border: none;
+            color: white;
+            padding: 14px 28px;
+            cursor: pointer;
+        }
+        
+        .content {
+            font-family: "IranSans";
+            max-width: 580px;
+            margin: auto;
+            background: white;
+            padding: 10px;
+        }
+        
+        .success {
+            font-family: "IranSans";
+            background-color: #4CAF50;
+        }
+        /* Green */
+        
+        .success:hover {
+            background-color: #46a049;
+        }
+    </style>
+</head>
+
+<body class="font">
+    <div class="content" style="text-align: center;">
+        <h1>برای بازگشت به برنامه بر روی دکمه زیر کلیک کنید</h1>
+        <div class="content">
+            <a href="app://com.separesh.app.trader" style="text-decoration: none;" class="btn success font back-app">بازگشت به
+                برنامه</a>
+            <!-- <button class="btn success font">بازگشت به برنامه</button> -->
+        </div>
+    </div>
+
+    </div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        var param = location.search;
+        var url = "app://com.separesh.app.trader" + param
+        $(".back-app").attr("href", url);
+        window.location.replace(url);
+        // $("button").click(function() {
+        //     window.location.replace("http://stackoverflow.com");
+        // });
+    });
+</script>
+
+</html>

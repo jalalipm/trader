@@ -25,6 +25,16 @@ class PaymentController extends Controller
         return MessageHelper::instance()->sendResponse('Successfully received', $list, 200);
     }
 
+
+    public function get_by_user()
+    {
+        $list = Payment::where('user_id', Auth()->user()->id)->get();
+        $data = ['payments' => $list];
+        return MessageHelper::instance()->sendResponse('Successfully received', $data, 200);
+    }
+
+
+
     public function store(PaymentRequest $request)
     {
         // $validator = $this->validate::make($request->all(), [
@@ -61,8 +71,8 @@ class PaymentController extends Controller
         ];
 
         $payment = Payment::create($data);
-
-        return MessageHelper::instance()->sendResponse('Successfully registered', $payment, 201);
+        $data = ['payment' => $payment];
+        return MessageHelper::instance()->sendResponse('Successfully registered', $data, 201);
     }
 
     public function show(Payment $payment)
@@ -86,10 +96,11 @@ class PaymentController extends Controller
         $apiSecret = config('jibit.password');
         $jibit = new Jibit($apiKey, $apiSecret);
         $amount = $request->amount;
-        $factorNumber = $request->json()->has('order_no') ? $request->json()->get('order_no') : 0;
-        $mobile = $request->json()->has('cell_phone') ? $request->json()->get('cell_phone') : 0;
-        $callback_url = $request->json()->get('callback_url');
-        $order_arr = $request->json()->get('order');
+        $factorNumber = $request->order_no; //$request->json()->has('order_no') ? $request->json()->get('order_no') : 0;
+        $mobile = $request->cell_phone; //$request->json()->has('cell_phone') ? $request->json()->get('cell_phone') : 0;
+        $callback_url = 'https://trade.separesh.shop/app.html'; //$request->callback_url; // $request->json()->get('callback_url');
+        $order_arr = $request->order; // $request->json()->get('order');
+        // dd($order_arr);
         try {
             $requestResult = $jibit->paymentRequest($amount, $factorNumber, $mobile, $callback_url);
             $data = [
@@ -116,7 +127,7 @@ class PaymentController extends Controller
 
     public function pay_verify(Request $request)
     {
-        $ref_id = $request->json()->get('ref_id');
+        $ref_id = $request->ref_id;
         $apiKey = config('jibit.username');
         $apiSecret = config('jibit.password');
         $jibit = new Jibit($apiKey, $apiSecret);
@@ -140,26 +151,28 @@ class PaymentController extends Controller
                     "payment_kind" => 2,
                     "is_success" => (!isset($verify['status']) ? null : $verify['status']) == 'SUCCESS' ? 1 : 0,
                 ];
-                Payment::create($data);
-                $data = $this->user_account($ref_id, Carbon::parse($verify['modifiedAt']));
-                // dd($data);
+                $payment =  Payment::create($data);
+                $user_account = $this->user_account($ref_id, $payment->id, Carbon::parse($verify['modifiedAt']));
+                $data = ['payment_result' => $verify];
+                return MessageHelper::instance()->sendResponse('Successfully Recived', $data, 200);
             }
-            return MessageHelper::instance()->sendResponse('Successfully Recived', $verify, 200);
+            return MessageHelper::instance()->sendResponse('Successfully Recived', ['status' => false], 200);
         } catch (\Exception $ex) {
             $string = $ex->getMessage();
             return response()->json(['code' => '1004', 'message' => 'error while inserting data', 'errors' => $string], 400);
         }
     }
 
-    private function user_account($ref_id, $transaction_date)
+    private function user_account($ref_id, $payment_id, $transaction_date)
     {
         $draft_order = DraftOrder::where('tracking_code', $ref_id)->get();
         foreach ($draft_order as $item) {
             $data_arr[] = [
+                'payment_id' => $payment_id,
                 'user_id' => $item['user_id'],
                 'portfolio_management_id' => $item['portfolio_management_id'],
                 'price' => $item['price'],
-                'tracking_code' => $item['tracking_code'],
+                // 'tracking_code' => $item['tracking_code'],
                 'payment_kind' => 2,
                 'payment_type' => 4,
                 'transaction_date' => $transaction_date

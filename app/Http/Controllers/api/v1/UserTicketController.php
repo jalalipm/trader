@@ -28,6 +28,8 @@ class UserTicketController extends Controller
             'user_id' => Auth::user()->id,
             'title' => $request->title,
             'comment' => $request->comment,
+            'full_name' => $request->full_name,
+            'cell_phone' => $request->cell_phone,
         ];
         $item = UserTicket::create($data);
         $data = ['user_ticket' => $item];
@@ -36,7 +38,7 @@ class UserTicketController extends Controller
 
     public function show($id)
     {
-        $item = UserTicket::find($id);
+        $item = UserTicket::with('UserTicketResponses')->find($id);
         $data = ['user_ticket' => $item];
         return MessageHelper::instance()->sendResponse('Successfully Recieved', $data, 200);
     }

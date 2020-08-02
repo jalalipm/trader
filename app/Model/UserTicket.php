@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class UserTicket extends Model
 {
     protected $fillable = [
-        'user_id', 'title', 'comment'
+        'user_id', 'title', 'comment', 'full_name', 'cell_phone'
     ];
 
     public function UserTicketResponses()
