@@ -44,6 +44,23 @@ class UserBankAccountController extends Controller
         return MessageHelper::instance()->sendResponse('Successfully received', $data, 200);
     }
 
+    public function get_account_info_by_iban(Request $request)
+    {
+        $user = Auth::user();
+        // if ($request->iban == '000000000000000000000000') {
+        //     $data = ['user_bank_account' => null];
+        // } else {
+        $data = ['user_bank_account' => [
+            'iban' => $request->iban,
+            'account_holder' => $user->name,
+            'user_id' => $user->id,
+            'card_number' => '',
+            'bank_name' => 'بانک ملت'
+        ]];
+        // }
+        return MessageHelper::instance()->sendResponse('Successfully registered', $data, 200);
+    }
+
     public function update(Request $request)
     {
         // dd($request->all());

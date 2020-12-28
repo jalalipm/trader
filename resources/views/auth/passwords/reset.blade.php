@@ -1,65 +1,64 @@
-@extends('layouts.app')
-
+@extends('layouts.frontend')
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Reset Password') }}</div>
+    <section class="flexbox-container">
+        <div class="col-md-4 offset-md-4 col-xs-10 offset-xs-1 box-shadow-2 p-0">
+            <div class="card border-grey border-lighten-3 px-2 py-2 m-0">
+                <div class="card-header no-border pb-0">
+                    <div class="card-title text-xs-center">
+                        <img src="../../app-assets/images/logo/robust-logo-dark.png" alt="branding logo">
+                    </div>
+                    <h6 class="card-subtitle line-on-side text-muted text-xs-center font-small-3 pt-2"><span>یک آدرس برای بازیابی کلمه عبور برای شما ارسال می شود.</span></h6>
+                </div>
+                <div class="card-body collapse in">
+                    <div class="card-block">
+                        {{--<form class="form-horizontal" method="POST" action="{{route('post.reset')}}" novalidate>--}}
+                        {{--                            {{csrf_field()}}--}}
+                        {!! Form::open(['route' => 'password.reset' , 'method' => 'POST']) !!}
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('password.update') }}">
-                        @csrf
-
-                        <input type="hidden" name="token" value="{{ $token }}">
-
-                        <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ $email ?? old('email') }}" required autocomplete="email" autofocus>
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                        {!! Form::hidden('token',$token) !!}
+                        <fieldset class="form-group position-relative has-icon-left mb-1">
+                            {{--<input type="email" class="form-control form-control-lg input-lg" name="email" id="user-email" placeholder="پست الکترونیک" required>--}}
+                            {!! Form::text('email',null, ['class' => 'form-control form-control-lg input-lg','placeholder'=>"پست الکترونیک"]); !!}
+                            <div class="form-control-position">
+                                <i class="icon-mail6"></i>
                             </div>
-                        </div>
+                        </fieldset>
+                        <fieldset class="form-group position-relative has-icon-left">
+                            {{--<input type="password" class="form-control form-control-lg input-lg" name="password" id="user-password" placeholder="کلمه عبور" required>--}}
+                            {!! Form::password('password', ['class' => 'form-control form-control-lg input-lg','placeholder'=>"کلمه عبور"]); !!}
 
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                            <div class="form-control-position">
+                                <i class="icon-key3"></i>
                             </div>
-                        </div>
+                        </fieldset>
+                        <fieldset class="form-group position-relative has-icon-left">
+                            {{--<input type="password" class="form-control form-control-lg input-lg" name="password" id="user-password" placeholder="کلمه عبور" required>--}}
+                            {!! Form::password('password_confirmation', ['class' => 'form-control form-control-lg input-lg','placeholder'=>"تکرار کلمه عبور"]); !!}
 
-                        <div class="form-group row">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
+                            <div class="form-control-position">
+                                <i class="icon-key3"></i>
                             </div>
-                        </div>
+                        </fieldset>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block"><i class="icon-lock4"></i> بازیابی کلمه عبور</button>
+                        {!! Form::close() !!}
 
-                        <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Reset Password') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                        {{--</form>--}}
+                    </div>
+                </div>
+                <div class="card-footer no-border">
+                    <p class="float-sm-left text-xs-center"><a href="{{route('login')}}" class="card-link">ورود به سایت</a></p>
+                    <p class="float-sm-right text-xs-center"> <a href="{{route('register')}}" class="card-link">عضویت در سایت</a></p>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+    </section>
 @endsection
+
+{{--{!! Form::open(['url' => 'password/email' , 'method' => 'POST']) !!}--}}
+
+{{--{!! Form::label('email', 'پست الکترونیک :') !!}--}}
+{{--{!! Form::text('email',null, ['class' => 'form-control']); !!}--}}
+
+{{--{!! Form::submit('بازیابی کلمه عبور' , ['class' => 'form-control' ]) !!}--}}
+
+{{--{!! Form::close() !!}--}}

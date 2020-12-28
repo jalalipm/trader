@@ -22,11 +22,11 @@ return [
     'general' => [
         "firebase_topics_name" => "trade",
         "firebase_url" => "https://fcm.googleapis.com/fcm/send",
-        "firebase_authorization_web" => "Authorization: key=AAAA3QMp_DM:APA91bGgjXMuVK3FhOHy5LWoOHoe7SD6w7F90M6LcFMEiGw_dk44hPMYidZEMGjReTUclaLKLriHVUuPaWZT8QjYcXmZGTsQYM4YqQSKkdwiIbIaVNmf283RBHdH6Q8VgN1oCJULZ4Hy",
-        "firebase_authorization_app" => "Authorization: key=AAAABZqJadg:APA91bGg7ZsEjwQc_DPTs6z2NX69AjzAQYRjtLyElsG99UafcNbQbikES4uMIZtBdkBfBFLrT0G_xgfmkKrDpCZmv5nk83kqWlSC5w5n4MwSNCQYZl1TK8-h8_PTMfluq1JB5ZOGzH0F"
+        "firebase_authorization" => "Authorization: key=AAAAzVD8SFU:APA91bHifHOvaWtEpBLLMNGRaS-fmuLs_wviOZGovxNxcKxIB8UmAMppm_lDxMtFuvWZ6n0b1KUG7dTY8sfKAuAmDchLH4l1P7R__AarvNnYv0M7LPO4x_1YJ-TlmvlM1io3GsB_dVFU",
+        // "firebase_authorization_app" => "Authorization: key=AAAABZqJadg:APA91bGg7ZsEjwQc_DPTs6z2NX69AjzAQYRjtLyElsG99UafcNbQbikES4uMIZtBdkBfBFLrT0G_xgfmkKrDpCZmv5nk83kqWlSC5w5n4MwSNCQYZl1TK8-h8_PTMfluq1JB5ZOGzH0F"
     ],
     'public' => [
-        'call_number' => "02175239000",
+        'call_number' => "02145226",
         'separesh_url' => "https://trade.separesh.shop/about.html",
         'about_url' => "https://trade.separesh.shop/about.html",
         "firebase_topic" => "trade",

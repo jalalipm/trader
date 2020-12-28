@@ -8,6 +8,6 @@ class PortfolioManagement extends Model
 {
     protected $table = 'portfolio_managements';
     protected $fillable = [
-        'title', 'avatar', 'description', 'interest_rate'
+        'title', 'avatar', 'describtion', 'interest_rate'
     ];
 }

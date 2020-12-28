@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class UserAccount extends Model
 {
@@ -14,17 +15,24 @@ class UserAccount extends Model
     {
         return $query->leftjoin('users', 'users.id', '=', 'user_accounts.user_id')
             ->leftjoin('portfolio_managements', 'portfolio_managements.id', '=', 'user_accounts.portfolio_management_id')
+            ->leftjoin('payments', 'payments.id', '=', 'user_accounts.payment_id')
             ->where('user_accounts.user_id', $user_id)
             ->select([
                 'user_accounts.id',
                 'user_accounts.payment_id',
+                'payments.ref_id',
                 'user_accounts.user_id',
                 'user_accounts.portfolio_management_id',
                 'portfolio_managements.title as portfolio_management_title',
                 'user_accounts.price',
                 'user_accounts.payment_kind',
                 'user_accounts.payment_type',
-                'user_accounts.transaction_date'
+                DB::raw("case when payment_type = 1 then 'سود'
+                                when payment_type = 2 then 'زیان'
+                                when payment_type = 3 then 'تسویه'
+                                else 'خرید' end as payment_type_title"),
+                'user_accounts.transaction_date',
+                DB::raw("pdate(user_accounts.transaction_date) as shamsi_transaction_date"),
             ]);
     }
 

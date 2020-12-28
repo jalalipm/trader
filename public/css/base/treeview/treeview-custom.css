@@ -1,0 +1,92 @@
+* {
+    box-sizing: border-box;
+}
+
+#myInput {
+    width: 100%;
+    font-size: 16px;
+    padding: 12px 20px 12px 40px;
+    border: 1px solid #ddd;
+    margin-bottom: 12px;
+}
+
+.css-treeview input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.css-treeview {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.css-treeview input + label + ul {
+    margin: 0 22px 8px 22px;
+}
+
+.css-treeview input + label + ul {
+    display: none;
+}
+
+.css-treeview label,
+.css-treeview label::before {
+    cursor: pointer;
+}
+
+.css-treeview input:disabled + label {
+    cursor: default;
+    opacity: .6;
+}
+
+.css-treeview input:checked:not(:disabled) + label + ul {
+    display: block;
+}
+
+.css-treeview label,
+.css-treeview a,
+.css-treeview label::before {
+    display: inline-block;
+    height: 16px;
+    /*line-height: 16px;,*/
+vertical-align: middle;
+}
+
+.css-treeview label {
+    padding-right: 22px;
+    vertical-align: middle;
+    width: 100%;
+}
+
+.css-treeview input + label,
+.css-treeview input + label::before {
+    background: url("../../p.png") no-repeat;
+    cursor: pointer;
+    background-position: right;
+    height: 40px;
+}
+
+.css-treeview input:checked + label,
+.css-treeview input:checked label::before {
+    background: url("../../m.png") no-repeat;
+    cursor: pointer;
+    background-position: right;
+}
+
+.css-treeview input + label.nosub,
+.css-treeview input + label.nosub::before {
+    background: none;
+}
+
+.css-treeview input:checked + label.nosub,
+.css-treeview input:checked label.nosub::before {
+    background: none;
+}
+
+.css-treeview a{
+    height: 28px !important;
+}
+.list-group-item {
+    padding: 0px;
+}

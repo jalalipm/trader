@@ -34,6 +34,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('Profile', 'RegisterController@profile');
     Route::post('Refresh', 'RegisterController@refresh');
     Route::put('UpdateUserProfile', 'RegisterController@update');
+    Route::post('UpdateProfileAvatar', 'RegisterController@update_profile_avatar');
     Route::delete('DeleteProfileAvatar', 'RegisterController@delete_profile_avatar');
 });
 
@@ -46,6 +47,7 @@ Route::Group(
         Route::get('PortfolioManagementInterest', 'PortfolioManagementController@interest');
         Route::get('StockData', 'StockDataController@index');
         Route::get('Faq', 'FaqController@index');
+        Route::post('AnonymouslyTicket', 'UserTicketController@store');
     }
 );
 
@@ -86,6 +88,7 @@ Route::Group(
 
         //UserBankAccount
         Route::get('UserBankAccount/{id}', 'UserBankAccountController@show');
+        Route::post('GetAccountInfoByIban', 'UserBankAccountController@get_account_info_by_iban');
         Route::get('UserBankAccountByUser', 'UserBankAccountController@get_by_user');
         Route::post('UserBankAccount', 'UserBankAccountController@store');
         Route::put('UserBankAccount', 'UserBankAccountController@update');
@@ -96,14 +99,14 @@ Route::Group(
         Route::get('UserTicketByUser', 'UserTicketController@get_by_user');
         Route::post('UserTicket', 'UserTicketController@store');
         Route::put('UserTicket', 'UserTicketController@update');
-        Route::delete('UserTicket', 'UserTicketController@destroy');
+        Route::delete('UserTicket/{id}', 'UserTicketController@destroy');
 
         //UserTicketResponce
         Route::get('UserTicketResponse/{id}', 'UserTicketResponseController@show');
         Route::get('UserTicketResponseByTicketID/{id}', 'UserTicketResponseController@get_by_ticket_id');
         Route::post('UserTicketResponse', 'UserTicketResponseController@store');
         Route::put('UserTicketResponse', 'UserTicketResponseController@update');
-        Route::delete('UserTicketResponse', 'UserTicketResponseController@destroy');
+        Route::delete('UserTicketResponse/{id}', 'UserTicketResponseController@destroy');
 
         //Dashboard
         Route::get('GetDashboard', 'DashboardController@get_dashboard');
@@ -111,10 +114,14 @@ Route::Group(
         //Message
         Route::get('Message/{id}', 'MessageController@show');
         Route::get('MessageByUser', 'MessageController@get_by_user');
+        Route::post('MessageRead', 'MessageController@message_read');
 
         //Message
         Route::get('UserDocumentByUser', 'UserDocumentController@get_by_user');
         Route::post('UserDocument', 'UserDocumentController@store');
-        Route::delete('UserDocument', 'UserDocumentController@destroy');
+        Route::delete('UserDocument/{id}', 'UserDocumentController@destroy');
+
+        //Report
+        Route::post('CostBenefitByPortfolioReport', 'ReportController@cost_benefit_by_portfolio_report');
     }
 );

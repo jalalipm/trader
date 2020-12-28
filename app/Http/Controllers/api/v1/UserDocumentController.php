@@ -46,7 +46,7 @@ class UserDocumentController extends Controller
             }
         }
         $user_doucument = UserDocument::create($data);
-        $data = ['user_doucument' => UserDocument::find($user_doucument->id)];
+        $data = ['user_document' => UserDocument::find($user_doucument->id)];
         if ($user_doucument instanceof UserDocument) {
             return MessageHelper::instance()->sendResponse('Successfully Inserted', $data, 201);
         }
@@ -62,16 +62,26 @@ class UserDocumentController extends Controller
         //
     }
 
-    public function destroy(Request $request)
+    public function destroy($id)
     {
         try {
-            $user_document = UserDocument::find($request->id);
+            $user_document = UserDocument::find($id);
             $base_url = URL::to('/');
             $file_name = public_path() . substr($user_document->pic_path, strlen($base_url));
             if (file_exists($file_name))
-                unlink($file_name);
+                try {
+                    unlink($file_name);
+                } catch (\Exception $e) {
+                }
             $user_document->delete();
-            return MessageHelper::instance()->sendResponse('Successfully Deleted', null, 200);
+            $user = User::find(Auth()->user()->id);
+            if ($user->UserDocuments()->count() == 0)
+                $user->update(['status' => 1]);
+            else
+                $user->update(['status' => 2]);
+
+            $data = ['user' => $user = User::find(Auth()->user()->id)];
+            return MessageHelper::instance()->sendResponse('Successfully Deleted', $data, 200);
         } catch (QueryException $ex) {
             $string = $ex->getMessage();
             $error = ['errors' => $string];

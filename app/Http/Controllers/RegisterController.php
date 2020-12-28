@@ -59,6 +59,7 @@ class RegisterController extends Controller
             $user = Auth::user();
             $success['token'] =  $user->createToken('MyApp')->accessToken;
             $success['user'] =  $user;
+            $user->update(['push_id' => $request->push_id]);
             return MessageHelper::instance()->sendResponse('Successfully logged in', $success, 200);
         } else {
             return MessageHelper::instance()->sendError('Unauthorized', [], 401);
@@ -130,10 +131,34 @@ class RegisterController extends Controller
         }
     }
 
+    public function update_profile_avatar(Request $request)
+    {
+        try {
+            if (Request()->hasFile('avatar')) {
+                $UserUpdating = User::find(Auth()->user()->id);
+                $timestamp = Carbon::now(new \DateTimeZone('Asia/Tehran'))->timestamp;
+                $new_name = $UserUpdating->name . $timestamp . '_' . request()->file('avatar')->getClientOriginalName();
+                $file_path = request()->file('avatar')->move(public_path('files/users'), $new_name);
+                if ($file_path instanceof \Symfony\Component\HttpFoundation\File\File) {
+                    $dataList['avatar'] = url("/files/users/{$new_name}");
+                }
+            }
+            // $UserUpdating = User::find(Auth::user()->id);
+            $UserUpdating->update($dataList);
+            // $UserUpdated = User::find($UserUpdating->id);
+            $data = ['user' => $UserUpdating];
+            return MessageHelper::instance()->sendResponse('your profile is updated', $data, 200);
+        } catch (QueryException $ex) {
+            $string = $ex->getMessage();
+            return MessageHelper::instance()->sendError('error while updating data', $string, 400);
+        }
+    }
+
+
     public function delete_profile_avatar(Request $request)
     {
 
-        $input_user_id = $request->json()->get('user_id');
+        $input_user_id = Auth()->user()->id;
         try {
             $user = User::find($input_user_id);
             $base_url = URL::to('/');

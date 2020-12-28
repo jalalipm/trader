@@ -17,7 +17,7 @@ class UserTicketController extends Controller
 
     public function get_by_user()
     {
-        $item = UserTicket::where('user_id', Auth::user()->id)->with('UserTicketResponses')->get();
+        $item = UserTicket::where('user_id', Auth::user()->id)->with('UserResponses')->get();
         $data = ['user_tickets' => $item];
         return MessageHelper::instance()->sendResponse('Successfully Recieved', $data, 200);
     }
@@ -25,7 +25,7 @@ class UserTicketController extends Controller
     public function store(Request $request)
     {
         $data = [
-            'user_id' => Auth::user()->id,
+            'user_id' => $request->cell_phone == null ? Auth::user()->id : null,
             'title' => $request->title,
             'comment' => $request->comment,
             'full_name' => $request->full_name,
@@ -38,7 +38,7 @@ class UserTicketController extends Controller
 
     public function show($id)
     {
-        $item = UserTicket::with('UserTicketResponses')->find($id);
+        $item = UserTicket::with('UserResponses')->find($id);
         $data = ['user_ticket' => $item];
         return MessageHelper::instance()->sendResponse('Successfully Recieved', $data, 200);
     }

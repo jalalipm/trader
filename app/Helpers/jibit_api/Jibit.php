@@ -194,6 +194,17 @@ class Jibit
         }
         return 'unExcepted Err in generateNewToken.';
     }
+    // /**
+    //  * @param string $refNum
+    //  * @return bool|mixed|string
+    //  */
+    // public function paymentVerify($refNum)
+    // {
+    //     $this->generateToken();
+    //     $data = [];
+    //     return $this->callCurl('/orders/' /*. 'verify/'*/ . $refNum, $data, true, 0, 'GET');
+    // }
+
     /**
      * @param string $refNum
      * @return bool|mixed|string
@@ -202,6 +213,15 @@ class Jibit
     {
         $this->generateToken();
         $data = [];
+        // return $this->callCurl('/orders/' /*. 'verify/'*/ . $refNum, $data, true, 0, 'GET');
+        return $this->callCurl('/orders/' . $refNum . '/verify', $data, true, 0, 'GET');
+    }
+
+    public function paymentInquiry($refNum)
+    {
+        $this->generateToken();
+        $data = [];
         return $this->callCurl('/orders/' /*. 'verify/'*/ . $refNum, $data, true, 0, 'GET');
+        // return $this->callCurl('/orders/' . $refNum . '/verify', $data, true, 0, 'GET');
     }
 }

@@ -17,7 +17,7 @@ class DraftOrder extends Model
 
     public function scopeDraftOrder($query)
     {
-        return $query->leftjoin('users', 'users.id', '=', 'draft_orders.customer_id')
+        return $query->leftjoin('users', 'users.id', '=', 'draft_orders.user_id')
             ->leftjoin('portfolio_managements', 'portfolio_managements.id', '=', 'draft_orders.portfolio_management_id')
             ->select([
                 'draft_orders.user_id',

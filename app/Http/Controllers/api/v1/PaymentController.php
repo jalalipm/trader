@@ -98,7 +98,7 @@ class PaymentController extends Controller
         $amount = $request->amount;
         $factorNumber = $request->order_no; //$request->json()->has('order_no') ? $request->json()->get('order_no') : 0;
         $mobile = $request->cell_phone; //$request->json()->has('cell_phone') ? $request->json()->get('cell_phone') : 0;
-        $callback_url = 'https://trade.separesh.shop/app.html'; //$request->callback_url; // $request->json()->get('callback_url');
+        $callback_url = 'https://trade.separesh.shop/app.html'; // $request->callback_url; // $request->json()->get('callback_url');
         $order_arr = $request->order; // $request->json()->get('order');
         // dd($order_arr);
         try {
@@ -107,6 +107,7 @@ class PaymentController extends Controller
                 'payment_url' => $requestResult['pspSwitchingUrl'],
                 'tracking_code' => $requestResult['orderIdentifier']
             ];
+            // dd($data);
             $proxy = new DraftOrderController();
             foreach ($order_arr as $item) {
                 $data_arr[] = [
@@ -133,23 +134,43 @@ class PaymentController extends Controller
         $jibit = new Jibit($apiKey, $apiSecret);
         try {
             $verify = $jibit->paymentVerify($ref_id);
-            if ($verify['status'] == 'SUCCESS') {
+
+            if ($verify['status'] == 'Successful') {
+                $inquiry = $jibit->paymentInquiry($ref_id);
+                // $data = [
+                //     "user_id" => Auth::user()->id,
+                //     "ref_id" => $verify['id'],
+                //     "amount" =>  $verify['amount'],
+                //     "currency" => !isset($verify['currency']) ? null : $verify['currency'],
+                //     "reference_number" => !isset($verify['referenceNumber']) ? null : $verify['referenceNumber'],
+                //     "callback_url" =>  !isset($verify['callbackUrl']) ? null : $verify['callbackUrl'],
+                //     "description" => isset($verify['description']) ? $verify['description'] : null,
+                //     "status" => !isset($verify['status']) ? null : $verify['status'],
+                //     "init_payer_ip" => !isset($verify['initPayerIp']) ? null : $verify['initPayerIp'],
+                //     "redirect_payer_ip" => !isset($verify['redirectPayerIp']) ? null : $verify['redirectPayerIp'],
+                //     "transaction_date" => !isset($verify['modifiedAt']) ? null : Carbon::parse($verify['modifiedAt']),
+                //     "payer_card" => !isset($verify['payerCard']) ? null : $verify['payerCard'],
+                //     "payer_name" => !isset($verify['payerName']) ? null : $verify['payerName'],
+                //     "payment_kind" => 2,
+                //     "is_success" => (!isset($verify['status']) ? null : $verify['status']) == 'SUCCESS' ? 1 : 0,
+                // ];
                 $data = [
                     "user_id" => Auth::user()->id,
-                    "ref_id" => $verify['id'],
-                    "amount" =>  $verify['amount'],
-                    "currency" => !isset($verify['currency']) ? null : $verify['currency'],
-                    "reference_number" => !isset($verify['referenceNumber']) ? null : $verify['referenceNumber'],
-                    "callback_url" =>  !isset($verify['callbackUrl']) ? null : $verify['callbackUrl'],
-                    "description" => isset($verify['description']) ? $verify['description'] : null,
-                    "status" => !isset($verify['status']) ? null : $verify['status'],
-                    "init_payer_ip" => !isset($verify['initPayerIp']) ? null : $verify['initPayerIp'],
-                    "redirect_payer_ip" => !isset($verify['redirectPayerIp']) ? null : $verify['redirectPayerIp'],
-                    "transaction_date" => !isset($verify['modifiedAt']) ? null : Carbon::parse($verify['modifiedAt']),
-                    "payer_card" => !isset($verify['payerCard']) ? null : $verify['payerCard'],
-                    "payer_name" => !isset($verify['payerName']) ? null : $verify['payerName'],
+                    "ref_id" => $inquiry['id'],
+                    "amount" =>  $inquiry['amount'],
+                    "currency" => !isset($inquiry['currency']) ? null : $inquiry['currency'],
+                    "reference_number" => !isset($inquiry['referenceNumber']) ? null : $inquiry['referenceNumber'],
+                    "callback_url" =>  !isset($inquiry['callbackUrl']) ? null : $inquiry['callbackUrl'],
+                    "description" => isset($inquiry['description']) ? $inquiry['description'] : null,
+                    "status" => !isset($inquiry['status']) ? null : $inquiry['status'],
+                    // "status" => 'SUCCESS',
+                    "init_payer_ip" => !isset($inquiry['initPayerIp']) ? null : $inquiry['initPayerIp'],
+                    "redirect_payer_ip" => !isset($inquiry['redirectPayerIp']) ? null : $inquiry['redirectPayerIp'],
+                    "transaction_date" => !isset($inquiry['modifiedAt']) ? null : Carbon::parse($inquiry['modifiedAt']),
+                    "payer_card" => !isset($inquiry['payerCard']) ? null : $inquiry['payerCard'],
+                    "payer_name" => !isset($inquiry['payerName']) ? null : $inquiry['payerName'],
                     "payment_kind" => 2,
-                    "is_success" => (!isset($verify['status']) ? null : $verify['status']) == 'SUCCESS' ? 1 : 0,
+                    "is_success" => (!isset($inquiry['status']) ? null : $inquiry['status']) == 'SUCCESS' ? 1 : 0,
                 ];
                 $payment =  Payment::create($data);
                 $user_account = $this->user_account($ref_id, $payment->id, Carbon::parse($verify['modifiedAt']));
