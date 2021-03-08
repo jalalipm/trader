@@ -48,8 +48,6 @@ Route::Group(
         Route::get('StockData', 'StockDataController@index');
         Route::get('Faq', 'FaqController@index');
         Route::post('AnonymouslyTicket', 'UserTicketController@store');
-        //test
-        // Route::get('CallMethod', 'ReportController@call_method');
     }
 );
 
