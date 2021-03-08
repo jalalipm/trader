@@ -12,11 +12,6 @@ use Illuminate\Support\Facades\Auth;
 
 class RefundRequestController extends Controller
 {
-    public function index()
-    {
-        //
-    }
-
     public function get_by_user()
     {
         $list = RefundRequest::GetByUser(Auth::user()->id)->get();

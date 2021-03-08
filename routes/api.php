@@ -58,27 +58,26 @@ Route::Group(
     function () {
         //User
 
-        // Route::get('PortfolioManagement', 'PortfolioManagementController@index');
         Route::get('PortfolioManagementByUser', 'PortfolioManagementController@get_by_user');
-        Route::post('PortfolioManagement', 'PortfolioManagementController@store');
-        Route::put('PortfolioManagement/{id}', 'PortfolioManagementController@update');
         Route::delete('PortfolioManagement/{id}', 'PortfolioManagementController@destroy');
+        // Route::get('PortfolioManagement', 'PortfolioManagementController@index');
+        // Route::post('PortfolioManagement', 'PortfolioManagementController@store');
+        // Route::put('PortfolioManagement/{id}', 'PortfolioManagementController@update');
 
         //StockData
-        Route::get('StockData/{id}', 'StockDataController@show');
         Route::post('StockData', 'StockDataController@store');
-        Route::put('StockData/{id}', 'StockDataController@update');
-        Route::delete('StockData/{id}', 'StockDataController@destroy');
+        // Route::get('StockData/{id}', 'StockDataController@show');
+        // Route::put('StockData/{id}', 'StockDataController@update');
+        // Route::delete('StockData/{id}', 'StockDataController@destroy');
 
         //Payment
         Route::get('PaymentByUser', 'PaymentController@get_by_user');
-        Route::get('Payment/{id}', 'PaymentController@show');
+        Route::post('Payment', 'PaymentController@store');
         Route::get('PaymentDoPay', 'PaymentController@do_pay');
         Route::get('PaymentVerify', 'PaymentController@pay_verify');
-        Route::get('Payment/{id}', 'PaymentController@show');
-        Route::post('Payment', 'PaymentController@store');
-        Route::put('Payment/{id}', 'PaymentController@update');
-        Route::delete('Payment/{id}', 'PaymentController@destroy');
+        // Route::get('Payment/{id}', 'PaymentController@show');
+        // Route::put('Payment/{id}', 'PaymentController@update');
+        // Route::delete('Payment/{id}', 'PaymentController@destroy');
 
         //RefundRequest
         Route::get('RefundRequest/{id}', 'RefundRequestController@show');
@@ -100,15 +99,15 @@ Route::Group(
         Route::get('UserTicket/{id}', 'UserTicketController@show');
         Route::get('UserTicketByUser', 'UserTicketController@get_by_user');
         Route::post('UserTicket', 'UserTicketController@store');
-        Route::put('UserTicket', 'UserTicketController@update');
-        Route::delete('UserTicket/{id}', 'UserTicketController@destroy');
+        // Route::put('UserTicket', 'UserTicketController@update');
+        // Route::delete('UserTicket/{id}', 'UserTicketController@destroy');
 
         //UserTicketResponce
-        Route::get('UserTicketResponse/{id}', 'UserTicketResponseController@show');
         Route::get('UserTicketResponseByTicketID/{id}', 'UserTicketResponseController@get_by_ticket_id');
         Route::post('UserTicketResponse', 'UserTicketResponseController@store');
-        Route::put('UserTicketResponse', 'UserTicketResponseController@update');
-        Route::delete('UserTicketResponse/{id}', 'UserTicketResponseController@destroy');
+        // Route::get('UserTicketResponse/{id}', 'UserTicketResponseController@show');
+        // Route::put('UserTicketResponse', 'UserTicketResponseController@update');
+        // Route::delete('UserTicketResponse/{id}', 'UserTicketResponseController@destroy');
 
         //Dashboard
         Route::get('GetDashboard', 'DashboardController@get_dashboard');

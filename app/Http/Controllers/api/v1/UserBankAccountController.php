@@ -10,10 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class UserBankAccountController extends Controller
 {
-    public function index()
-    {
-        //
-    }
 
     public function store(Request $request)
     {
@@ -38,7 +34,6 @@ class UserBankAccountController extends Controller
 
     public function get_by_user()
     {
-        // dd(Auth::user());
         $item = UserBankAccount::where('user_id', Auth::user()->id)->get();
         $data = ['user_bank_accounts' => $item];
         return MessageHelper::instance()->sendResponse('Successfully received', $data, 200);
@@ -63,7 +58,6 @@ class UserBankAccountController extends Controller
 
     public function update(Request $request)
     {
-        // dd($request->all());
         $item = UserBankAccount::find($request->id);
         $dataList = [
             'account_holder' => $request->account_holder,
@@ -80,7 +74,6 @@ class UserBankAccountController extends Controller
     {
         $dataList = UserBankAccount::find($id);
         $dataList->delete();
-        // $data = ["user_bank_account" => null];
         return MessageHelper::instance()->sendResponse('Successfully Deleted', null, 200);
     }
 }

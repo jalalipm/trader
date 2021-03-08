@@ -90,28 +90,6 @@ class PortfolioManagementController extends Controller
         }
     }
 
-    // public function delete($id)
-    // {
-    //     if ($id && ctype_digit($id)) {
-    //         $portfolio_management = PortfolioManagement::find($id);
-    //         if ($portfolio_management && $portfolio_management instanceof PortfolioManagement) {
-    //             $portfolio_management->delete();
-    //             if (isset($portfolio_management->avatar)) {
-    //                 $base_url = URL::to('/');
-    //                 $file_name = public_path() . substr($portfolio_management->avatar, strlen($base_url));
-    //                 if (file_exists($file_name))
-    //                     unlink($file_name);
-    //             }
-    //             return response('delete', 200);
-    //         }
-    //     }
-    // }
-
-    // public function show($id)
-    // {
-    //     //
-    // }
-
     public function destroy($id)
     {
         if ($id && ctype_digit($id)) {

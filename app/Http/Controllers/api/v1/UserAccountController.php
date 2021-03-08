@@ -9,30 +9,9 @@ use Illuminate\Support\Facades\Auth;
 
 class UserAccountController extends Controller
 {
-
-    public function index()
-    {
-        //
-    }
-
     public function store($request)
     {
         $result = UserAccount::insert($request);
         return $result;
-    }
-
-    public function show(UserAccount $userAccount)
-    {
-        //
-    }
-
-    public function update(Request $request, UserAccount $userAccount)
-    {
-        //
-    }
-
-    public function destroy(UserAccount $userAccount)
-    {
-        //
     }
 }

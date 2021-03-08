@@ -10,10 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class UserTicketResponseController extends Controller
 {
-    public function index()
-    {
-        //
-    }
 
     public function get_by_ticket_id($id)
     {
@@ -32,20 +28,5 @@ class UserTicketResponseController extends Controller
         $item = UserTicketResponse::create($data);
         $data = ['user_ticket_response' => $item];
         return MessageHelper::instance()->sendResponse('Successfully Inserted', $data, 201);
-    }
-
-    public function show(UserTicketResponse $userTicketResponse)
-    {
-        //
-    }
-
-    public function update(Request $request, UserTicketResponse $userTicketResponse)
-    {
-        //
-    }
-
-    public function destroy(UserTicketResponse $userTicketResponse)
-    {
-        //
     }
 }

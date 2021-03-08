@@ -10,10 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class UserTicketController extends Controller
 {
-    public function index()
-    {
-        //
-    }
 
     public function get_by_user()
     {
@@ -41,15 +37,5 @@ class UserTicketController extends Controller
         $item = UserTicket::with('UserResponses')->find($id);
         $data = ['user_ticket' => $item];
         return MessageHelper::instance()->sendResponse('Successfully Recieved', $data, 200);
-    }
-
-    public function update(Request $request, UserTicket $userTickt)
-    {
-        //
-    }
-
-    public function destroy(UserTicket $userTickt)
-    {
-        //
     }
 }

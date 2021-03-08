@@ -27,15 +27,12 @@ class PaymentController extends Controller
         return MessageHelper::instance()->sendResponse('Successfully received', $list, 200);
     }
 
-
     public function get_by_user()
     {
         $list = Payment::where('user_id', Auth()->user()->id)->get();
         $data = ['payments' => $list];
         return MessageHelper::instance()->sendResponse('Successfully received', $data, 200);
     }
-
-
 
     public function store(PaymentRequest $request)
     {

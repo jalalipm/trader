@@ -14,14 +14,8 @@ use Illuminate\Support\Facades\URL;
 
 class UserDocumentController extends Controller
 {
-    public function index()
-    {
-        //
-    }
-
     public function get_by_user()
     {
-        // dd(Auth::user());
         $item = UserDocument::where('user_id', Auth::user()->id)->get();
         $data = ['user_documents' => $item];
         return MessageHelper::instance()->sendResponse('Successfully received', $data, 200);
@@ -50,16 +44,6 @@ class UserDocumentController extends Controller
         if ($user_doucument instanceof UserDocument) {
             return MessageHelper::instance()->sendResponse('Successfully Inserted', $data, 201);
         }
-    }
-
-    public function show(UserDocument $userDocument)
-    {
-        //
-    }
-
-    public function update(Request $request, UserDocument $userDocument)
-    {
-        //
     }
 
     public function destroy($id)
