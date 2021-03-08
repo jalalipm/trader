@@ -48,6 +48,8 @@ Route::Group(
         Route::get('StockData', 'StockDataController@index');
         Route::get('Faq', 'FaqController@index');
         Route::post('AnonymouslyTicket', 'UserTicketController@store');
+        //test
+        // Route::get('CallMethod', 'ReportController@call_method');
     }
 );
 
@@ -122,6 +124,6 @@ Route::Group(
         Route::delete('UserDocument/{id}', 'UserDocumentController@destroy');
 
         //Report
-        Route::post('CostBenefitByPortfolioReport', 'ReportController@cost_benefit_by_portfolio_report');
+        Route::post('CostBenefitReport', 'ReportController@cost_benefit_report');
     }
 );

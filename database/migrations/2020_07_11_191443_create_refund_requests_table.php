@@ -19,7 +19,8 @@ class CreateRefundRequestsTable extends Migration
             $table->unsignedBigInteger('portfolio_management_id');
             $table->decimal('price', 18, 2)->default(0);
             $table->enum('status', ['processing', 'canceled', 'doing', 'done']);
-            $table->dateTime('transaction_date');
+            $table->dateTime('request_date');
+            $table->dateTime('transaction_date')->nullable();
             $table->text('comment')->nullable();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');

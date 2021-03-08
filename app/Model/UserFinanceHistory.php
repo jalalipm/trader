@@ -59,6 +59,27 @@ class UserFinanceHistory extends Model
             ]);
     }
 
+    public function scopeCostBenefitTotalReport($query)
+    {
+        return $query->leftjoin('users', 'users.id', '=', 'user_finance_history.user_id')
+            ->Join(
+                DB::raw("(select h.portfolio_management_id,h.user_id,max(h.trade_date) trade_date from user_finance_history h
+                            group by h.portfolio_management_id,h.user_id) tot"),
+                function ($join) {
+                    $join->on('user_finance_history.portfolio_management_id', '=', 'tot.portfolio_management_id');
+                    $join->on('user_finance_history.user_id', '=', 'tot.user_id');
+                    $join->on('user_finance_history.trade_date', '=', 'tot.trade_date');
+                }
+            )
+            ->select([
+                'user_finance_history.user_id',
+                'users.name',
+                'user_finance_history.final_price',
+                'user_finance_history.fund',
+                'user_finance_history.pure_price',
+            ]);
+    }
+
     public function scopeFinanceHistoryByPortfolio($query, $portfolio_management_id, $date)
     {
         $current_date = $date->toDateTimeString();
@@ -145,10 +166,10 @@ class UserFinanceHistory extends Model
                                     (select h.*,ifnull(tot.total_deposit,0) as total_deposit,ifnull(tot.total_withdraw,0) as total_withdraw from user_finance_history h
                                     left join (select portfolio_management_id as pm_id,sum(case when user_id != 0 then deposit else 0 end) as total_deposit,
                                     						sum(case when user_id != 0 then withdraw else 0 end) as total_withdraw from user_finance_history
-                                     				where trade_date = (select trade_date from user_finance_history where trade_date <= '$before_date' order by trade_date desc limit 1) and
+                                     				where trade_date = (select trade_date from user_finance_history where trade_date <= '$before_date' and portfolio_management_id = $portfolio_management_id order by trade_date desc limit 1) and
                                      						user_id != 0
                                      				group by portfolio_management_id) tot on tot.pm_id = h.portfolio_management_id
-                                    where h.trade_date = (select trade_date from user_finance_history where trade_date <= '$before_date' order by trade_date desc limit 1) and 
+                                    where h.trade_date = (select trade_date from user_finance_history where trade_date <= '$before_date' and portfolio_management_id = $portfolio_management_id order by trade_date desc limit 1) and 
                                     h.portfolio_management_id = $portfolio_management_id
                                     order by h.trade_date desc
                                     ) history on history.portfolio_management_id = ac.portfolio_management_id and ifnull(history.user_id,0) = ac.user_id ) total 

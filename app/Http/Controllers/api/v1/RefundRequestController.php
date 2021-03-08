@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\v1;
 use App\Helpers\MessageHelper;
 use App\Http\Controllers\Controller;
 use App\Model\RefundRequest;
+use App\Model\UserFinanceHistory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +19,6 @@ class RefundRequestController extends Controller
 
     public function get_by_user()
     {
-        // dd(Auth::user());
         $list = RefundRequest::GetByUser(Auth::user()->id)->get();
         $data = ['refund_requests' => $list];
         return MessageHelper::instance()->sendResponse('Successfully registered', $data, 200);
@@ -33,14 +33,13 @@ class RefundRequestController extends Controller
 
     public function store(Request $request)
     {
-        // dd(Auth::user()->id);
         $Date = Carbon::now(new \DateTimeZone('Asia/Tehran'));
         $data = [
             'user_id' => Auth::user()->id,
             'portfolio_management_id' => $request->portfolio_management_id,
             'price' => $request->price,
-            'status' => 1,
-            'transaction_date' => strval($Date),
+            'status' => RefundRequest::PROCESSING,
+            'request_date' => strval($Date),
             'comment' => $request->comment
         ];
         $item = RefundRequest::create($data);
@@ -60,7 +59,7 @@ class RefundRequestController extends Controller
     {
         // dd($request->all());
         $item = RefundRequest::find($request->id);
-        if ($item->status != 1) {
+        if ($item->status != RefundRequest::PROCESSING) {
             $dataList = [
                 'portfolio_management_id' => $request->portfolio_management_id,
                 'price' => $request->price,
@@ -78,7 +77,7 @@ class RefundRequestController extends Controller
     public function destroy($id)
     {
         $item = RefundRequest::find($id);
-        if ($item->status != 1) {
+        if ($item->status != RefundRequest::PROCESSING) {
             $item->delete();
             return MessageHelper::instance()->sendResponse('Successfully Deleted', null, 200);
         } else {

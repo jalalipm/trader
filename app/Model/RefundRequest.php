@@ -8,7 +8,19 @@ use Illuminate\Support\Facades\DB;
 class RefundRequest extends Model
 {
     protected $fillable = [
-        'user_id', 'portfolio_management_id', 'price', 'status', 'transaction_date', 'comment'
+        'user_id', 'portfolio_management_id', 'price', 'status', 'transaction_date', 'request_date', 'comment'
+    ];
+
+    const PROCESSING = 1;
+    const CANCELED = 2;
+    const DOING = 3;
+    const DONE = 4;
+
+    const STATUS_LIST = [
+        1 => 'در حال بررسی',
+        2 => 'انصراف',
+        3 => 'در حال انجام',
+        4 => 'انجام شده',
     ];
 
     public function setPriceAttribute($value)
@@ -46,6 +58,8 @@ class RefundRequest extends Model
                 'portfolio_managements.title as portfolio_management_title',
                 'refund_requests.price',
                 'refund_requests.status',
+                'refund_requests.request_date',
+                DB::raw("pdate(refund_requests.request_date) as shamsi_request_date"),
                 'refund_requests.transaction_date',
                 DB::raw("pdate(refund_requests.transaction_date) as shamsi_transaction_date"),
                 DB::raw("case when refund_requests.status = 1 then 'در حال بررسی'
@@ -68,6 +82,7 @@ class RefundRequest extends Model
                 'refund_requests.price',
                 'refund_requests.status',
                 'refund_requests.transaction_date',
+                'refund_requests.request_date',
                 'refund_requests.comment'
             ]);
     }

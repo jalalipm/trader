@@ -54,42 +54,36 @@ class PortfolioDailyTradeController extends Controller
 
     public function finance_history_calc($portfolio_management_id, $date, $trade_percent)
     {
-        $befor_date = $date;
-
-        // dd($l, $portfolio_management_id, $date->subDay()->format('Y-m-d'));
-        // dd($date->format('Y-m-d'));
-        UserFinanceHistory::where('trade_date', $date->subDay()->format('Y-m-d'))
+        $current_date = $date;
+        UserFinanceHistory::where('trade_date', $current_date)
             ->where('portfolio_management_id', $portfolio_management_id)
             ->delete();
-        // dd($l, $date->addDay()->format('Y-m-d'), $date->format('Y-m-d'));
-        $result =  UserFinanceHistory::FinanceHistoryByPortfolio($portfolio_management_id, $date->addDay());
+        $result =  UserFinanceHistory::FinanceHistoryByPortfolio($portfolio_management_id, $current_date);
+        $current_date = $date->addDay();
         $result = json_decode(json_encode($result), true);
         $user_finance_history = [];
         $total_final_price = 0;
         foreach ($result as $item) {
-            $total_final_price = $total_final_price  + $item['current_fund'];
+            $total_final_price = $total_final_price + $item['current_fund'];
         }
-        // dd($result[0], $portfolio_management_id, $date);
         foreach ($result as $item) {
             $input = [
                 'user_id' => ($item['user_id'] == 0 ? null : $item['user_id']),
                 'portfolio_management_id' => $portfolio_management_id,
-                'trade_date' =>  $date->toDateTimeString(),
+                'trade_date' =>  $current_date->format('Y-m-d'),
                 'fund' => round($item['fund'], 0),
-                // 'before_percent_of_basket' => $item['before_percent_of_basket'],
                 'current_fund' =>  round($item['current_fund'], 0),
                 'deposit' =>  round($item['deposit'], 0),
                 'withdraw' =>  round($item['withdraw'], 0),
                 'pure_price' =>  round($item['current_fund'], 0),
-                'percent_of_basket' =>  round($item['current_fund'], 0) /  $total_final_price,
+                'percent_of_basket' =>  round($item['current_fund'], 0) / $total_final_price,
                 'final_price' =>  round($item['current_fund'], 0) + (round($item['current_fund'] * $trade_percent / 100, 0)),
             ];
             array_push($user_finance_history, $input);
         }
-        // dd($date->format('Y-m-d'));
-
+        // dd($befor_date, $current_date->format('Y-m-d'), $user_finance_history);
         // dd($l, $date->format('Y-m-d'));
-        // dd($user_finance_history[0], $user_finance_history[1]);
+        // dd($user_finance_history[0], $current_date->format('Y-m-d'));
         UserFinanceHistory::insert($user_finance_history);
     }
 
@@ -113,10 +107,10 @@ class PortfolioDailyTradeController extends Controller
         $input = request()->except('_token');
         $input['trade_date'] = DateUtility::shamsiTomiladi($request->shamsi_trade_date);
         $portfolio_daily_trades_item->update($input);
-        $portfolio_count = PortfolioDailyTrade::where('portfolio_management_id', $portfolio_daily_trades_item->portfolio_management_id)->count();
-        if ($portfolio_count > 1) {
-            $this->finance_history_calc(request()->input('portfolio_management_id'), $input['trade_date'], $request->trade_percent);
-        }
+        // $portfolio_count = PortfolioDailyTrade::where('portfolio_management_id', $portfolio_daily_trades_item->portfolio_management_id)->count();
+        // if ($portfolio_count > 1) {
+        $this->finance_history_calc(request()->input('portfolio_management_id'), $input['trade_date'], $request->trade_percent);
+        // }
         return response('update', 200);
     }
 

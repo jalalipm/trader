@@ -8,7 +8,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PaymentRequest;
 use App\Model\DraftOrder;
 use App\Model\Payment;
+use App\Model\PortfolioDailyTrade;
 use App\Model\UserAccount;
+use App\Model\UserFinanceHistory;
 use Carbon\Carbon;
 use Dotenv\Result\Result;
 use Illuminate\Http\Request;
@@ -73,21 +75,6 @@ class PaymentController extends Controller
         $payment = Payment::create($data);
         $data = ['payment' => $payment];
         return MessageHelper::instance()->sendResponse('Successfully registered', $data, 201);
-    }
-
-    public function show(Payment $payment)
-    {
-        //
-    }
-
-    public function update(Request $request, Payment $payment)
-    {
-        //
-    }
-
-    public function destroy(Payment $payment)
-    {
-        //
     }
 
     public function do_pay(Request $request)
@@ -193,14 +180,51 @@ class PaymentController extends Controller
                 'user_id' => $item['user_id'],
                 'portfolio_management_id' => $item['portfolio_management_id'],
                 'price' => $item['price'],
-                // 'tracking_code' => $item['tracking_code'],
-                'payment_kind' => 2,
-                'payment_type' => 4,
+                'payment_kind' => UserAccount::DEBIT,
+                'payment_type' => UserAccount::PAYMENT,
                 'transaction_date' => $transaction_date
             ];
         }
         $proxy = new UserAccountController();
         $result =  $proxy->store($data_arr);
+        $portfolio_daily_trade =  PortfolioDailyTrade::where('trade_date', $transaction_date)->first();
+        $this->finance_history_calc(
+            $item['portfolio_management_id'],
+            $transaction_date,
+            (isset($portfolio_daily_trade) ? 0 : $portfolio_daily_trade->trade_percent)
+        );
         return $result;
+    }
+
+    public function finance_history_calc($portfolio_management_id, $date, $trade_percent)
+    {
+        $current_date = $date;
+        UserFinanceHistory::where('trade_date', $current_date)
+            ->where('portfolio_management_id', $portfolio_management_id)
+            ->delete();
+        $result =  UserFinanceHistory::FinanceHistoryByPortfolio($portfolio_management_id, $current_date);
+        $current_date = $date->addDay();
+        $result = json_decode(json_encode($result), true);
+        $user_finance_history = [];
+        $total_final_price = 0;
+        foreach ($result as $item) {
+            $total_final_price = $total_final_price + $item['current_fund'];
+        }
+        foreach ($result as $item) {
+            $input = [
+                'user_id' => ($item['user_id'] == 0 ? null : $item['user_id']),
+                'portfolio_management_id' => $portfolio_management_id,
+                'trade_date' =>  $current_date->format('Y-m-d'),
+                'fund' => round($item['fund'], 0),
+                'current_fund' =>  round($item['current_fund'], 0),
+                'deposit' =>  round($item['deposit'], 0),
+                'withdraw' =>  round($item['withdraw'], 0),
+                'pure_price' =>  round($item['current_fund'], 0),
+                'percent_of_basket' =>  round($item['current_fund'], 0) / $total_final_price,
+                'final_price' =>  round($item['current_fund'], 0) + (round($item['current_fund'] * $trade_percent / 100, 0)),
+            ];
+            array_push($user_finance_history, $input);
+        }
+        UserFinanceHistory::insert($user_finance_history);
     }
 }

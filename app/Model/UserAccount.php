@@ -7,6 +7,15 @@ use Illuminate\Support\Facades\DB;
 
 class UserAccount extends Model
 {
+
+    const INTEREST = 1;
+    const LOSS = 2;
+    const REFUND = 3;
+    const PAYMENT = 4;
+
+    const CREDIT = 1;
+    const DEBIT = 2;
+
     protected $fillable = [
         'payment_id', 'user_id', 'portfolio_management_id', 'price', 'payment_kind', 'payment_type', 'transaction_date'
     ];

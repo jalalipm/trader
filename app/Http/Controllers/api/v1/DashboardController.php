@@ -6,9 +6,11 @@ use App\Helpers\MessageHelper;
 use App\Http\Controllers\Controller;
 use App\Model\PortfolioManagement;
 use App\Model\UserAccount;
+use App\Model\UserFinanceHistory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use phpseclib\Crypt\Random;
 
 class DashboardController extends Controller
@@ -16,27 +18,33 @@ class DashboardController extends Controller
 
     public function get_dashboard()
     {
-        // dd(date('Y-m-d h:i:s', 1595415847000 / 1000), date('Y-m-d h:i:s', 1595414332597 / 1000));
         $x = [];
         $y = [];
-        for ($i = 29; $i >= 0; $i--) {
-            $x[] = Carbon::now(new \DateTimeZone('Asia/Tehran'))->subDay($i)->timestamp * 1000;
-            if ($i > 20)
-                $rnd = random_int(5000000, 6500000);
-            else if ($i >= 10 && $i < 20)
-                $rnd = random_int(6600000, 8000000);
-            else $rnd = random_int(8000000, 9000000);
-            $y[] = $rnd;
+        $cost_benefit_total_report = UserFinanceHistory::CostBenefitTotalReport()
+            ->where('user_finance_history.user_id', Auth::user()->id);
+        $cost_benefit_report = UserFinanceHistory::CostBenefitReport()
+            ->where('user_finance_history.user_id', Auth::user()->id)
+            ->groupBy('user_finance_history.user_id', 'user_finance_history.trade_date')
+            ->select([
+                'user_finance_history.user_id',
+                'user_finance_history.trade_date',
+                DB::raw("sum(user_finance_history.final_price) as final_price"),
+            ]);
+        foreach ($cost_benefit_report->get() as $item) {
+            $x[] = Carbon::parse($item->trade_date)->timestamp * 1000;
+            $y[] = $item->final_price * 1;
         }
+        // $cost_benefit_total_report->sum('final_price');
         $portfolio_list = PortfolioManagement::orderBy('interest_rate', 'Desc')->take(5)->get();
+        // $cost_benefit_total_report->orderBy('trade_date', 'desc')->get();
         $data = [
             'dashboard' => [
                 'user_balance' => UserAccount::GetByUserID(Auth::user()->id)->sum('user_accounts.price'),
                 'portfolio_managements' => $portfolio_list,
-                'today_income' => 262300,
-                'today_income_percent' => 2.23,
-                'income' => 8432500,
-                'income_percent' => 1.28,
+                'today_income' => $cost_benefit_total_report->sum('final_price') - $cost_benefit_total_report->sum('pure_price'),
+                'today_income_percent' => $cost_benefit_total_report->sum('final_price')  == 0 ? 0 : ($cost_benefit_total_report->sum('final_price') - $cost_benefit_total_report->sum('pure_price')) * 100 / $cost_benefit_total_report->sum('final_price'),
+                'income' => $cost_benefit_total_report->sum('final_price'),
+                'income_percent' => $cost_benefit_total_report->sum('fund') == 0 ? 0 : $cost_benefit_total_report->sum('final_price') / $cost_benefit_total_report->sum('fund') * 100,
                 'x' => $x,
                 'y' => $y,
             ]

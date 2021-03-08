@@ -46,6 +46,25 @@ $('#refund_request-save-btn').click(function(event) {
                     message: 'پرسش جدید با موفقیت ایجاد شد.',
                     position: 'bottomLeft'
                 });
+            } else if (response == 'refund_not_fund') {
+                iziToast.error({
+                    title: 'خطا',
+                    message: 'سرمایه گذاری برای این شخص در این تاریخ یا در این سبد انجام نشده است',
+                    position: 'bottomLeft'
+                });
+            }
+            if (response == 'refund_not_fund') {
+                iziToast.error({
+                    title: 'خطا',
+                    message: 'سرمایه گذاری برای این شخص در این تاریخ یا در این سبد انجام نشده است',
+                    position: 'bottomLeft'
+                });
+            } else if (response == 'refund_overflow') {
+                iziToast.error({
+                    title: 'خطا',
+                    message: 'مبلغ درخواستی بیشتر از میزان سرمایه گذاری این شخص می باشد.',
+                    position: 'bottomLeft'
+                });
             } else {
                 $('#refund_request-modal').modal('hide');
                 iziToast.success({
